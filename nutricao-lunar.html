@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nutrição Lunar · Lua Cheia em Sagitário</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&family=Raleway:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #8a6200;
+    --gold-light: #a07800;
+    --cream: #1a1100;
+    --deep: #fdf8f0;
+    --ink: #1a1228;
+    --muted: #5a4e30;
+    --sage: #3d3550;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--deep);
+    color: var(--cream);
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── STAR FIELD ── */
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .star {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(120,90,10,0.3);
+    animation: twinkle var(--d, 3s) ease-in-out infinite alternate;
+    animation-delay: var(--delay, 0s);
+    opacity: 0;
+  }
+  @keyframes twinkle {
+    from { opacity: 0.1; transform: scale(1); }
+    to   { opacity: 0.8; transform: scale(1.4); }
+  }
+
+  /* ── GRAIN OVERLAY ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px;
+  }
+
+  /* ── LAYOUT ── */
+  .page {
+    position: relative;
+    z-index: 2;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 72px 0 56px;
+    opacity: 0;
+    animation: fadeUp 1.1s ease forwards 0.2s;
+  }
+
+  .moon-wrap {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 32px;
+  }
+
+  .moon {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%,
+      #fff8e8 0%,
+      #f2d77a 30%,
+      #c9a84c 60%,
+      #8b6914 100%
+    );
+    box-shadow:
+      0 0 40px 10px rgba(201,168,76,0.3),
+      0 0 80px 20px rgba(201,168,76,0.15),
+      0 0 140px 40px rgba(201,168,76,0.07);
+    animation: moonGlow 4s ease-in-out infinite alternate;
+    position: relative;
+  }
+
+  @keyframes moonGlow {
+    from { box-shadow: 0 0 40px 10px rgba(201,168,76,0.3), 0 0 80px 20px rgba(201,168,76,0.15), 0 0 140px 40px rgba(201,168,76,0.07); }
+    to   { box-shadow: 0 0 60px 20px rgba(201,168,76,0.45), 0 0 120px 40px rgba(201,168,76,0.25), 0 0 200px 60px rgba(201,168,76,0.1); }
+  }
+
+  .moon-ring {
+    position: absolute;
+    inset: -18px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.25);
+    animation: ringPulse 4s ease-in-out infinite alternate;
+  }
+  .moon-ring-2 {
+    position: absolute;
+    inset: -36px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.1);
+    animation: ringPulse 4s ease-in-out infinite alternate 0.5s;
+  }
+
+  @keyframes ringPulse {
+    from { opacity: 0.4; transform: scale(1); }
+    to   { opacity: 1; transform: scale(1.04); }
+  }
+
+  .eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.8s;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.6rem, 8vw, 4.2rem);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    color: var(--cream);
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards 1s;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .hero-date {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    color: var(--muted);
+    margin-top: 16px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 1.3s;
+  }
+
+  .hero-sub {
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: rgba(30,20,5,0.65);
+    margin-top: 24px;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 1.5s;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 48px 0;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 1.8s;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(201,168,76,0.35), transparent);
+  }
+  .divider-symbol {
+    color: var(--gold);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  /* ── TIRAGEM SECTION ── */
+  .section {
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards 2s;
+  }
+
+  .section-label {
+    font-family: 'Cinzel', serif;
+    font-size: 9.5px;
+    letter-spacing: 0.38em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.7rem, 5vw, 2.4rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.25;
+    margin-bottom: 28px;
+    color: var(--cream);
+  }
+
+  /* ── TRAITS & HELPS ── */
+  .traits-list, .reading-helps {
+    margin: 28px 0;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(201,168,76,0.12);
+    border-radius: 14px;
+    padding: 24px 26px;
+  }
+
+  .traits-title {
+    font-family: 'Cinzel', serif;
+    font-size: 9.5px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .traits-list ul, .reading-helps ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .traits-list li, .reading-helps li {
+    font-size: 0.9rem;
+    color: rgba(30,20,5,0.82);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    line-height: 1.5;
+  }
+
+  .trait-emoji {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    width: 24px;
+    text-align: center;
+  }
+
+  .bullet-dot {
+    color: var(--gold);
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  /* ── CARDS GRID ── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+    margin: 32px 0;
+  }
+
+  .card-item {
+    background: rgba(255,255,255,0.032);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 12px;
+    padding: 22px 16px 18px;
+    text-align: center;
+    transition: border-color 0.3s, background 0.3s, transform 0.3s;
+    cursor: default;
+  }
+
+  .card-item:hover {
+    border-color: rgba(201,168,76,0.4);
+    background: rgba(201,168,76,0.06);
+    transform: translateY(-3px);
+  }
+
+  .card-icon {
+    font-size: 26px;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .card-name {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .card-desc {
+    font-size: 0.78rem;
+    line-height: 1.55;
+    color: rgba(30,20,5,0.55);
+  }
+
+  /* ── BODY TEXT ── */
+  .body-text {
+    font-size: 0.93rem;
+    line-height: 1.85;
+    color: rgba(30,20,5,0.72);
+  }
+
+  .body-text + .body-text {
+    margin-top: 16px;
+  }
+
+  /* ── PRICE BOX ── */
+  .price-box {
+    margin: 48px 0;
+    border: 1px solid rgba(201,168,76,0.28);
+    border-radius: 16px;
+    padding: 36px 32px;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(201,168,76,0.07) 0%, rgba(13,10,20,0) 60%);
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards 2.4s;
+  }
+
+  .price-box::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%;
+    transform: translateX(-50%);
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .price-label {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.38em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .price-amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 10vw, 5rem);
+    font-weight: 300;
+    color: var(--gold-light);
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+
+  .price-currency {
+    font-size: 0.45em;
+    vertical-align: super;
+    margin-right: 2px;
+  }
+
+  .price-note {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 10px;
+    letter-spacing: 0.05em;
+  }
+
+  .price-includes {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+  }
+
+  .include-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: rgba(245,237,224,0.68);
+    line-height: 1.5;
+  }
+
+  .include-dot {
+    color: var(--gold);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ── CTA ── */
+  .cta-section {
+    text-align: center;
+    margin-top: 16px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards 2.7s;
+  }
+
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #c9a84c, #e8c97a, #c9a84c);
+    background-size: 200% 100%;
+    color: #fff8e8;
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 18px 40px;
+    border-radius: 60px;
+    border: none;
+    cursor: pointer;
+    transition: background-position 0.5s, transform 0.25s, box-shadow 0.3s;
+    box-shadow: 0 4px 30px rgba(201,168,76,0.25);
+    font-weight: 600;
+  }
+
+  .cta-button:hover {
+    background-position: 100% 0;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 40px rgba(201,168,76,0.4);
+  }
+
+  .cta-button:active {
+    transform: translateY(0);
+  }
+
+  .cta-sub {
+    margin-top: 16px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    margin-top: 64px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(201,168,76,0.1);
+    font-size: 0.75rem;
+    color: rgba(90,78,48,0.45);
+    letter-spacing: 0.1em;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 3s;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 480px) {
+    .cards-grid { grid-template-columns: 1fr 1fr; }
+    .price-box { padding: 28px 20px; }
+    .cta-button { padding: 16px 28px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="page">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="moon-wrap">
+      <div class="moon-ring-2"></div>
+      <div class="moon-ring"></div>
+      <div class="moon"></div>
+    </div>
+    <p class="eyebrow">Ritual de Lua Cheia</p>
+    <h1>Nutrição<br><em>Lunar</em></h1>
+    <p class="hero-date">31 de Maio · Lua Cheia em Sagitário</p>
+    <p class="hero-sub">
+      Uma tiragem de tarot desenhada para iluminar o que está pronto para ser colhido, liberado e expandido neste ciclo de plenitude.
+    </p>
+  </section>
+
+  <!-- DIVIDER -->
+  <div class="divider"><span class="divider-symbol">✦</span></div>
+
+  <!-- TIRAGEM -->
+  <section class="section">
+    <p class="section-label">A Tiragem</p>
+    <h2 class="section-title">O que as cartas revelam neste portal de Lua Cheia</h2>
+
+    <p class="body-text">
+      A Lua Cheia em Sagitário traz expansão, verdade e libertação.<br>
+      É uma energia que ilumina aquilo que já não faz sentido carregar… e convida-te a olhar mais longe, com mais coragem, autenticidade e confiança no teu caminho. 🏹🌕
+    </p>
+
+    <div class="traits-list">
+      <p class="traits-title">Sagitário fala de:</p>
+      <ul>
+        <li><span class="trait-emoji">🔥</span> liberdade</li>
+        <li><span class="trait-emoji">🌍</span> novos caminhos</li>
+        <li><span class="trait-emoji">✨</span> fé e propósito</li>
+        <li><span class="trait-emoji">🕊</span> libertação de crenças limitantes</li>
+        <li><span class="trait-emoji">💫</span> crescimento pessoal e espiritual</li>
+      </ul>
+    </div>
+
+    <div class="reading-helps">
+      <p class="traits-title">Esta leitura vai ajudar-te a compreender:</p>
+      <ul>
+        <li><span class="bullet-dot">•</span> o que está a chegar ao auge nesta fase</li>
+        <li><span class="bullet-dot">•</span> o que precisa de ser libertado</li>
+        <li><span class="bullet-dot">•</span> para onde a tua alma te quer direcionar agora</li>
+      </ul>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card-item">
+        <span class="card-icon">🌑</span>
+        <p class="card-name">Carta 1</p>
+        <p class="card-desc">O que está em plena maturidade no teu campo</p>
+      </div>
+      <div class="card-item">
+        <span class="card-icon">🔥</span>
+        <p class="card-name">Carta 2</p>
+        <p class="card-desc">O que Sagitário convoca em ti para ser expandido</p>
+      </div>
+      <div class="card-item">
+        <span class="card-icon">🍃</span>
+        <p class="card-name">Carta 3</p>
+        <p class="card-desc">O que está pronto para ser liberado nesta Lua Cheia</p>
+      </div>
+      <div class="card-item">
+        <span class="card-icon">✨</span>
+        <p class="card-name">Carta 4</p>
+        <p class="card-desc">A mensagem e o presente desta lunação para ti</p>
+      </div>
+    </div>
+
+    <p class="body-text">
+      Recebes a tiragem completa por escrito, com a interpretação de cada carta e a mensagem do conjunto — entregue com cuidado e presença.
+    </p>
+  </section>
+
+  <!-- DIVIDER -->
+  <div class="divider" style="animation-delay:2.2s;"><span class="divider-symbol">✦</span></div>
+
+  <!-- PREÇO -->
+  <div class="price-box">
+    <p class="price-label">Investimento</p>
+    <div class="price-amount">
+      <span class="price-currency">€</span>30
+    </div>
+    <p class="price-note">pagamento único · entrega digital</p>
+    <div class="price-includes">
+      <div class="include-item">
+        <span class="include-dot">✦</span>
+        <span>Tiragem de 4 cartas interpretada individualmente para ti</span>
+      </div>
+      <div class="include-item">
+        <span class="include-dot">✦</span>
+        <span>Leitura escrita completa, personalizada e com profundidade</span>
+      </div>
+      <div class="include-item">
+        <span class="include-dot">✦</span>
+        <span>Entregue até 24h após a confirmação do pedido</span>
+      </div>
+      <div class="include-item">
+        <span class="include-dot">✦</span>
+        <span>Disponível até ao pôr do sol de 31 de Maio · vagas limitadas</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <a class="cta-button" href="https://wa.me/SEUNUMERO?text=Ol%C3%A1!%20Quero%20reservar%20a%20Nutri%C3%A7%C3%A3o%20Lunar%20da%20Lua%20Cheia%20em%20Sagit%C3%A1rio%20%F0%9F%8C%95" target="_blank" rel="noopener">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Reservar a minha leitura
+    </a>
+    <p class="cta-sub">Respondo em até 2h · vagas para esta Lua Cheia são limitadas</p>
+  </div>
+
+  <footer>
+    <p>✦ &nbsp; Nutrição Lunar &nbsp; · &nbsp; Lua Cheia em Sagitário &nbsp; · &nbsp; 31 Mai 2025 &nbsp; ✦</p>
+  </footer>
+
+</div>
+
+<script>
+  // Generate stars
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 120; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.2 + 0.5;
+    s.style.cssText = `
+      width:${size}px;
+      height:${size}px;
+      top:${Math.random()*100}%;
+      left:${Math.random()*100}%;
+      --d:${2.5 + Math.random()*4}s;
+      --delay:${Math.random()*5}s;
+    `;
+    starsEl.appendChild(s);
+  }
+</script>
+
+</body>
+</html>
